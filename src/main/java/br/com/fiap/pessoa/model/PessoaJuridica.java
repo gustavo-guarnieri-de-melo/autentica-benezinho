@@ -1,15 +1,23 @@
 package br.com.fiap.pessoa.model;
 
 import jakarta.persistence.*;
-
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.Objects;
 import java.util.Set;
 
-
+@Entity
+@Table(name = "pessoas_juridicas", uniqueConstraints = @UniqueConstraint(columnNames = {"CNPJ"}))
 public class PessoaJuridica extends Pessoa {
+    @Column(nullable = false, unique = true)
     private String CNPJ;
+
+    @ManyToMany
+    @JoinTable(
+            name = "pessoa_socio",
+            joinColumns = @JoinColumn(name = "empresa_id"),
+            inverseJoinColumns = @JoinColumn(name = "socio_id")
+    )
     private Set<Pessoa> socios = new LinkedHashSet<>();
     public String getCNPJ() {
         return CNPJ;

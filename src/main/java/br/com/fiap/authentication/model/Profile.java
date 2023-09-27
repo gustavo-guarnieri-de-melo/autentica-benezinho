@@ -1,17 +1,28 @@
 package br.com.fiap.authentication.model;
 
+import jakarta.persistence.*;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-/**
- * Mapeia um conjunto de permissões que uma pessoa
- * pode ter nos diversos sistemas da empresa
- */
+@Entity
+@Table(name = "profiles", uniqueConstraints = @UniqueConstraint(columnNames = {"nome"}))
 public class Profile {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(nullable = false)
     private String nome;
+
+    @ManyToMany
+    @JoinTable(
+            name = "profile_role",
+            joinColumns = @JoinColumn(name = "profile_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id")
+    )
     private Set<Role> roles = new LinkedHashSet<>();
+
 
     public Profile() {
     }

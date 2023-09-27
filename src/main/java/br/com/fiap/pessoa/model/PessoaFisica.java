@@ -1,14 +1,28 @@
 package br.com.fiap.pessoa.model;
 
+import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+@Entity
+@Table(name = "pessoas_fisicas", uniqueConstraints = @UniqueConstraint(columnNames = {"CPF"}))
 public class PessoaFisica extends Pessoa {
+    @Column(nullable = false, unique = true)
     private String CPF;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private Sexo sexo;
-    private Set<PessoaFisica> filhos = new LinkedHashSet<>(); //Os meus filhos
+
+    @ManyToMany
+    @JoinTable(
+            name = "pessoa_filho",
+            joinColumns = @JoinColumn(name = "pai_id"),
+            inverseJoinColumns = @JoinColumn(name = "filho_id")
+    )
+    private Set<PessoaFisica> filhos = new LinkedHashSet<>();
 
 
     public PessoaFisica() {

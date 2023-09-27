@@ -1,15 +1,32 @@
 package br.com.fiap.sistema.model;
 
 import br.com.fiap.pessoa.model.Pessoa;
-
+import br.com.fiap.pessoa.model.PessoaJuridica;
+import jakarta.persistence.*;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+
+@Entity
+@Table(name = "sistemas", uniqueConstraints = @UniqueConstraint(columnNames = {"sigla"}))
 public class Sistema {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(nullable = false)
     private String nome;
+
+    @Column(nullable = false, unique = true)
     private String sigla;
+
+    @ManyToMany
+    @JoinTable(
+            name = "sistema_responsavel",
+            joinColumns = @JoinColumn(name = "sistema_id"),
+            inverseJoinColumns = @JoinColumn(name = "pessoa_id")
+    )
     private Set<Pessoa> responsaveis = new LinkedHashSet<>();
 
     public Sistema(String nome, String sigla) {
@@ -24,7 +41,7 @@ public class Sistema {
         this.responsaveis = responsaveis;
     }
 
-    public Sistema addResponsavel(Pessoa pessoa) {
+    public Sistema addResponsavel(PessoaJuridica pessoa) {
         this.responsaveis.add(pessoa);
         return this;
     }

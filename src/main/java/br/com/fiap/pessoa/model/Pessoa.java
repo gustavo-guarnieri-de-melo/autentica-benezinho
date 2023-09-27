@@ -1,17 +1,22 @@
 package br.com.fiap.pessoa.model;
 
+import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.util.Objects;
 
-
+@Entity
+@Inheritance(strategy = InheritanceType.JOINED)
+@DiscriminatorColumn(name = "tipo_pessoa", discriminatorType = DiscriminatorType.STRING)
 public abstract class Pessoa {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     protected Long id;
 
-
+    @Column(nullable = false)
     protected String nome;
 
-
+    @Column(name = "data_nascimento")
     protected LocalDate nascimento;
 
     public Pessoa() {

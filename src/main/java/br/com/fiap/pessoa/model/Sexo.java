@@ -1,8 +1,14 @@
 package br.com.fiap.pessoa.model;
 
+import jakarta.persistence.*;
+
 public enum Sexo {
 
-    FEMININO(0, "Feminino", 'F'), MASCULINO(1, "Masculino", 'M');
+    @Enumerated(EnumType.STRING) // Adicione esta anotação
+    FEMININO(0, "Feminino", 'F'),
+
+    @Enumerated(EnumType.STRING) // Adicione esta anotação
+    MASCULINO(1, "Masculino", 'M');
 
     private int id;
     private String nome;

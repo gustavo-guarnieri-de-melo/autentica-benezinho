@@ -10,9 +10,11 @@ import br.com.fiap.sistema.model.Sistema;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
+import jakarta.persistence.TypedQuery;
 
 import javax.swing.*;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Random;
 
 public class Main {
@@ -21,6 +23,43 @@ public class Main {
         EntityManagerFactory factory = Persistence.createEntityManagerFactory("oracle");
         EntityManager manager = factory.createEntityManager();
 
+//        SistemaAntigo(manager);
+
+//        sistemaConsultarUsuarioPorId(manager);
+
+//        sistemaConsultaTodosUsuarios(manager);
+
+
+        manager.close();
+        factory.close();
+
+    }
+
+    private static void sistemaConsultaTodosUsuarios(EntityManager manager) {
+        List<User> usuarios = consultarTodosUsuarios(manager);
+
+        if (usuarios != null) {
+            System.out.println("Usuários encontrados:");
+            for (User usuario : usuarios) {
+                System.out.println(usuario);
+            }
+        } else {
+            System.out.println("Nenhum usuário encontrado.");
+        }
+    }
+
+    private static void sistemaConsultarUsuarioPorId(EntityManager manager) {
+        Long usuarioId = 1L;
+        User usuario = consultarUsuarioPorId(manager, usuarioId);
+
+        if (usuario != null) {
+            System.out.println("Usuário encontrado: " + usuario);
+        } else {
+            System.out.println("Usuário não encontrado.");
+        }
+    }
+
+    private static void SistemaAntigo(EntityManager manager) {
         var bene = new PessoaFisica();
 
         bene.setCPF(geraCpf())
@@ -101,11 +140,30 @@ public class Main {
             );
             e.printStackTrace();
         } finally {
-            manager.close();
-            factory.close();
+
             System.out.println(benefrancis);
         }
-
+    }
+    private static List<User> consultarTodosUsuarios(EntityManager manager) {
+        try {
+            TypedQuery<User> query = manager.createQuery("SELECT u FROM User u", User.class);
+            return query.getResultList();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null,
+                    "Erro na consulta de todos os usuários!\n\nDetalhes no console...");
+            e.printStackTrace();
+            return null;
+        }
+    }
+    private static User consultarUsuarioPorId(EntityManager manager, Long id) {
+        try {
+            return manager.find(User.class, id);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null,
+                    "Erro na consulta de usuário por ID!\n\nDetalhes no console...");
+            e.printStackTrace();
+            return null;
+        }
     }
 
     private static String geraCpf() {
